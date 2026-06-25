@@ -6,7 +6,11 @@
  * Conversa con el modelo (vía `/api/asistente`, streaming) para orientar sobre
  * turnos, días y ubicación, y arma el turno: cuando junta los datos, el modelo
  * llama a la herramienta `prepararTurno` y acá renderizamos una tarjeta con un
- * botón de WhatsApp pre-cargado. Estética sobre los tokens «Carta».
+ * botón de WhatsApp pre-cargado.
+ *
+ * Diseño: centrado y «sin caja», con el isotipo de marca como avatar y un aura
+ * de arcilla que respira detrás (juega con la «pausa» del punto medio). Sobre los
+ * tokens «Carta».
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -14,6 +18,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 
 import { Button } from "@/components/ui";
+import { Isotipo } from "@/components/site/Isotipo";
 import { buildTurnoWhatsApp, SUGERENCIAS, TURNO_CAMPOS, type TurnoInput } from "@/lib/asistente";
 import { whatsappLink } from "@/lib/site";
 import type { AsistenteMessage } from "@/app/api/asistente/route";
@@ -34,11 +39,12 @@ function TurnoCard({ data }: { data: TurnoInput }) {
   return (
     <div
       style={{
+        textAlign: "left",
         background: "var(--paper)",
         border: "1px solid var(--accent)",
         borderRadius: "var(--radius-md)",
         padding: "18px 20px",
-        boxShadow: "var(--shadow-md)",
+        boxShadow: "0 14px 40px -18px color-mix(in oklch, var(--clay) 55%, transparent)",
       }}
     >
       <div className="u-eyebrow" style={{ color: "var(--accent)", marginBottom: "14px" }}>
@@ -92,6 +98,7 @@ function Bubble({ role, children }: { role: "user" | "assistant"; children: Reac
           maxWidth: "85%",
           padding: "11px 15px",
           borderRadius: "var(--radius-lg)",
+          textAlign: "left",
           fontFamily: "var(--font-body)",
           fontSize: "15px",
           lineHeight: 1.6,
@@ -114,6 +121,7 @@ export function Asistente() {
     transport: new DefaultChatTransport({ api: "/api/asistente" }),
   });
   const [input, setInput] = useState("");
+  const [focused, setFocused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const busy = status === "submitted" || status === "streaming";
@@ -133,74 +141,68 @@ export function Asistente() {
   }
 
   return (
-    <section className="container" style={{ padding: "clamp(56px, 9vw, 88px) clamp(20px, 5vw, 48px)" }}>
-      <div style={{ maxWidth: "760px" }}>
-        <div className="u-eyebrow" style={{ marginBottom: "18px" }}>
+    <section
+      className="container"
+      style={{
+        padding: "clamp(64px, 10vw, 104px) clamp(20px, 5vw, 48px)",
+        position: "relative",
+        overflow: "hidden",
+        background:
+          "radial-gradient(ellipse 70% 60% at 50% 8%, color-mix(in oklch, var(--clay) 7%, transparent), transparent 70%)",
+      }}
+    >
+      <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "center", position: "relative" }}>
+        {/* Isotipo con aura */}
+        <div style={{ position: "relative", display: "inline-flex", justifyContent: "center", marginBottom: "26px" }}>
+          <span className="asistente-aura" aria-hidden="true" />
+          <span style={{ position: "relative", zIndex: 1 }}>
+            <Isotipo size={76} />
+          </span>
+        </div>
+
+        <div className="u-eyebrow" style={{ marginBottom: "14px" }}>
           Asistente virtual · 24 hs
         </div>
-        <h2 style={{ fontSize: "clamp(27px, 4.5vw, 34px)", lineHeight: 1.1 }}>
+        <h2 style={{ fontSize: "clamp(28px, 4.8vw, 38px)", lineHeight: 1.08 }}>
           ¿En qué te puedo{" "}
           <span style={{ fontStyle: "italic", color: "var(--accent)" }}>ayudar</span>?
         </h2>
-        <p style={{ fontSize: "17px", lineHeight: 1.6, color: "var(--text-muted)", marginTop: "16px", maxWidth: "54ch" }}>
-          Resolvé tus dudas sobre turnos, días de atención y ubicación. Si querés, te ayudo a
-          dejar el turno casi listo para enviar por WhatsApp.
-        </p>
-
-        {/* Caja de chat */}
-        <div
+        <p
           style={{
-            marginTop: "32px",
-            background: "var(--surface-panel)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-card)",
-            overflow: "hidden",
+            fontSize: "17px",
+            lineHeight: 1.6,
+            color: "var(--text-muted)",
+            margin: "16px auto 0",
+            maxWidth: "48ch",
           }}
         >
-          {/* Encabezado */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "9px",
-              padding: "13px 18px",
-              borderBottom: "1px solid var(--border)",
-              background: "var(--paper)",
-            }}
-          >
-            <span
-              aria-hidden="true"
-              style={{ width: "8px", height: "8px", borderRadius: "999px", background: "var(--success)", flexShrink: 0 }}
-            />
-            <span style={{ fontFamily: "var(--font-body)", fontSize: "13.5px", fontWeight: 600, color: "var(--text-strong)" }}>
-              Asistente del consultorio
-            </span>
-            <span style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--text-muted)", marginLeft: "auto" }}>
-              Responde al instante
-            </span>
-          </div>
+          Contame qué necesitás y te oriento sobre turnos, días de atención y ubicación. Si querés,
+          te dejo el turno casi listo para enviar por WhatsApp.
+        </p>
 
-          {/* Mensajes */}
+        {/* Panel de chat — integrado, con halo */}
+        <div style={{ position: "relative", marginTop: "36px" }}>
+          <span className="asistente-panel-glow" aria-hidden="true" />
           <div
-            ref={scrollRef}
-            aria-live="polite"
             style={{
-              padding: "20px 18px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-              minHeight: "220px",
-              maxHeight: "min(60vh, 460px)",
-              overflowY: "auto",
+              position: "relative",
+              zIndex: 1,
+              background: "var(--paper)",
+              border: "1px solid color-mix(in oklch, var(--clay) 22%, var(--border))",
+              borderRadius: "var(--radius-card)",
+              boxShadow:
+                "0 24px 60px -28px color-mix(in oklch, var(--clay) 45%, transparent), 0 2px 10px -6px color-mix(in oklch, var(--ink) 30%, transparent)",
+              overflow: "hidden",
+              textAlign: "left",
             }}
           >
+            {/* Conversación o estado vacío */}
             {isEmpty ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <Bubble role="assistant">
-                  ¡Hola! 👋 Soy el asistente de Cardiología Barrio · Scarano. Preguntame por turnos,
-                  días de atención o cómo llegar. ¿En qué te doy una mano?
-                </Bubble>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              <div style={{ padding: "26px 22px 8px", textAlign: "center" }}>
+                <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--text-muted)", marginBottom: "16px" }}>
+                  Probá con una de estas, o escribime abajo 👇
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", justifyContent: "center" }}>
                   {SUGERENCIAS.map((s) => (
                     <button
                       key={s}
@@ -212,11 +214,11 @@ export function Asistente() {
                         fontFamily: "var(--font-body)",
                         fontSize: "13.5px",
                         color: "var(--text-strong)",
-                        background: "var(--paper)",
+                        background: "var(--surface-panel)",
                         border: "1px solid var(--border-strong)",
                         borderRadius: "var(--radius-pill)",
-                        padding: "8px 14px",
-                        transition: "background var(--dur) var(--ease)",
+                        padding: "8px 15px",
+                        transition: "background var(--dur) var(--ease), border-color var(--dur) var(--ease)",
                       }}
                     >
                       {s}
@@ -225,109 +227,137 @@ export function Asistente() {
                 </div>
               </div>
             ) : (
-              messages.map((m) => (
-                <div key={m.id} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  {m.parts.map((part, i) => {
-                    if (part.type === "text") {
-                      return (
-                        <Bubble key={`${m.id}-${i}`} role={m.role === "user" ? "user" : "assistant"}>
-                          {part.text}
-                        </Bubble>
-                      );
-                    }
-                    if (
-                      part.type === "tool-prepararTurno" &&
-                      (part.state === "input-available" || part.state === "output-available")
-                    ) {
-                      return <TurnoCard key={`${m.id}-${i}`} data={part.input as TurnoInput} />;
-                    }
-                    return null;
-                  })}
-                </div>
-              ))
+              <div
+                ref={scrollRef}
+                aria-live="polite"
+                style={{
+                  padding: "22px 18px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  maxHeight: "min(56vh, 440px)",
+                  overflowY: "auto",
+                }}
+              >
+                {messages.map((m) => (
+                  <div key={m.id} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {m.parts.map((part, i) => {
+                      if (part.type === "text") {
+                        return (
+                          <Bubble key={`${m.id}-${i}`} role={m.role === "user" ? "user" : "assistant"}>
+                            {part.text}
+                          </Bubble>
+                        );
+                      }
+                      if (
+                        part.type === "tool-prepararTurno" &&
+                        (part.state === "input-available" || part.state === "output-available")
+                      ) {
+                        return <TurnoCard key={`${m.id}-${i}`} data={part.input as TurnoInput} />;
+                      }
+                      return null;
+                    })}
+                  </div>
+                ))}
+
+                {status === "submitted" ? (
+                  <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                    <div
+                      className="asistente-typing"
+                      style={{
+                        display: "flex",
+                        gap: "4px",
+                        padding: "13px 16px",
+                        background: "var(--paper)",
+                        border: "1px solid var(--border)",
+                        borderRadius: "var(--radius-lg)",
+                      }}
+                    >
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  </div>
+                ) : null}
+
+                {error ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "flex-start" }}>
+                    <Bubble role="assistant">
+                      Tuvimos un problema para responder. Probá de nuevo, o escribinos por WhatsApp.
+                    </Bubble>
+                    <Button variant="link" onClick={() => regenerate()}>
+                      Reintentar
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
             )}
 
-            {/* «Escribiendo…» mientras esperamos el primer token */}
-            {status === "submitted" ? (
-              <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                <div
-                  className="asistente-typing"
-                  style={{
-                    display: "flex",
-                    gap: "4px",
-                    padding: "13px 16px",
-                    background: "var(--paper)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "var(--radius-lg)",
-                  }}
-                >
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              </div>
-            ) : null}
-
-            {error ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "flex-start" }}>
-                <Bubble role="assistant">
-                  Tuvimos un problema para responder. Probá de nuevo, o escribinos por WhatsApp.
-                </Bubble>
-                <Button variant="link" onClick={() => regenerate()}>
-                  Reintentar
-                </Button>
-              </div>
-            ) : null}
-          </div>
-
-          {/* Barra de entrada */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              submit(input);
-            }}
-            style={{
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-              padding: "12px",
-              borderTop: "1px solid var(--border)",
-              background: "var(--paper)",
-            }}
-          >
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Escribí tu pregunta…"
-              aria-label="Escribí tu pregunta para el asistente"
-              enterKeyHint="send"
-              style={{
-                flex: 1,
-                border: "1px solid var(--border)",
-                borderRadius: "var(--radius-md)",
-                background: "var(--surface-panel)",
-                padding: "11px 14px",
-                font: "inherit",
-                fontFamily: "var(--font-body)",
-                fontSize: "15px",
-                color: "var(--text-strong)",
-                outline: "none",
+            {/* Barra de entrada — pastilla con glow al enfocar */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit(input);
               }}
-            />
-            {busy ? (
-              <Button variant="secondary" onClick={() => stop()}>
-                Detener
-              </Button>
-            ) : (
-              <Button type="submit" variant="primary" disabled={!input.trim()}>
-                Enviar
-              </Button>
-            )}
-          </form>
+              style={{
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+                margin: "14px",
+                padding: "6px 6px 6px 8px",
+                borderRadius: "var(--radius-pill)",
+                background: "var(--surface-panel)",
+                border: "1px solid " + (focused ? "var(--accent)" : "var(--border)"),
+                boxShadow: focused
+                  ? "0 0 0 4px color-mix(in oklch, var(--clay) 18%, transparent)"
+                  : "none",
+                transition: "border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease)",
+              }}
+            >
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                placeholder="Escribí tu pregunta…"
+                aria-label="Escribí tu pregunta para el asistente"
+                enterKeyHint="send"
+                style={{
+                  flex: 1,
+                  border: "none",
+                  background: "transparent",
+                  padding: "9px 12px",
+                  font: "inherit",
+                  fontFamily: "var(--font-body)",
+                  fontSize: "15px",
+                  color: "var(--text-strong)",
+                  outline: "none",
+                }}
+              />
+              {busy ? (
+                <Button variant="secondary" onClick={() => stop()}>
+                  Detener
+                </Button>
+              ) : (
+                <Button type="submit" variant="primary" disabled={!input.trim()}>
+                  Enviar
+                </Button>
+              )}
+            </form>
+          </div>
         </div>
 
         {/* Aviso médico — siempre visible */}
-        <p style={{ fontFamily: "var(--font-body)", fontSize: "12.5px", color: "var(--text-muted)", marginTop: "14px", lineHeight: 1.6, maxWidth: "60ch" }}>
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "12.5px",
+            color: "var(--text-muted)",
+            margin: "16px auto 0",
+            lineHeight: 1.6,
+            maxWidth: "56ch",
+          }}
+        >
           El asistente orienta, pero no da diagnósticos ni reemplaza la consulta médica. Ante una
           urgencia, llamá al <strong style={{ color: "var(--text-body)" }}>107</strong> o andá a la
           guardia más cercana.

@@ -388,6 +388,54 @@ img {
   animation-delay: 0.4s;
 }
 
+/* Asistente virtual — aura/glow que respira detrás del isotipo. Evoca la «pausa»
+   del punto medio. La regla global de prefers-reduced-motion la deja estática. */
+@keyframes asistente-aura {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+.asistente-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  height: 240px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--clay) 50%, transparent) 0%,
+    color-mix(in oklch, var(--clay) 14%, transparent) 42%,
+    transparent 70%
+  );
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: 0;
+  animation: asistente-aura 5.5s var(--ease) infinite;
+}
+
+/* Halo cálido y difuso detrás del panel de chat. */
+.asistente-panel-glow {
+  position: absolute;
+  inset: -40px -10px 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center top,
+    color-mix(in oklch, var(--clay) 16%, transparent) 0%,
+    transparent 62%
+  );
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* Grilla simétrica de 2 columnas → 1 en mobile. */
 .grid-2 {
   display: grid;
