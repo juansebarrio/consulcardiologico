@@ -44,6 +44,15 @@ export const SITE = {
   ],
 } as const;
 
+/**
+ * Video de fondo del hero (en loop). Poné tu archivo en `public/video/` y referencialo
+ * acá — por ejemplo "/video/hero.mp4". Dejá "" para no usar video (queda el fondo papel).
+ * Formato recomendado: MP4 (H.264), mudo, ~10–20s, 1080p o 720p, bien comprimido.
+ * Opcional: HERO_POSTER = imagen que se ve mientras carga (ej. "/video/hero-poster.jpg").
+ */
+export const HERO_VIDEO = "/video/hero.mp4";
+export const HERO_POSTER = "/video/hero-poster.jpg";
+
 /** Navegación principal (orden = orden en el header). */
 export const NAV = [
   { href: "/", label: "Inicio" },

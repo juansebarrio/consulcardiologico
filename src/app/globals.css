@@ -281,6 +281,59 @@ img {
   padding-inline: clamp(20px, 5vw, 48px);
 }
 
+/* ── Hero con video de fondo ──────────────────────────────────────────────
+   La sección es full-bleed (todo el ancho); el video va detrás y el contenido
+   vive en .hero-content (columna .container centrada). El velo de papel mantiene
+   legible el título oscuro. Ajustá las opacidades del .hero-scrim para ver
+   más/menos el video. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--paper); /* fallback si todavía no hay video */
+}
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  filter: saturate(0.92); /* integra el video al registro cálido de la marca */
+  pointer-events: none;
+}
+/* Velo papel: sólido sobre la columna de texto (izquierda), se abre hacia la
+   derecha para dejar ver el video. */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    var(--paper) 0%,
+    color-mix(in oklch, var(--paper) 90%, transparent) 42%,
+    color-mix(in oklch, var(--paper) 66%, transparent) 72%,
+    color-mix(in oklch, var(--paper) 42%, transparent) 100%
+  );
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 760px) {
+  /* En mobile el texto ocupa todo el ancho: velo parejo y fuerte para legibilidad. */
+  .hero-scrim {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--paper) 90%, transparent) 0%,
+      color-mix(in oklch, var(--paper) 80%, transparent) 55%,
+      color-mix(in oklch, var(--paper) 90%, transparent) 100%
+    );
+  }
+}
+
 /* Grilla simétrica de 2 columnas → 1 en mobile. */
 .grid-2 {
   display: grid;

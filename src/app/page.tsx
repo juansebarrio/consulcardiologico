@@ -1,27 +1,39 @@
 import Image from "next/image";
 
 import { Badge, Button, Callout, Card } from "@/components/ui";
-import { COMPROMISOS, DOCTORS, ROUTES } from "@/lib/site";
+import { HeroVideo } from "@/components/site/HeroVideo";
+import { COMPROMISOS, DOCTORS, HERO_POSTER, HERO_VIDEO, ROUTES } from "@/lib/site";
 
 export default function HomePage() {
   return (
     <div>
       {/* HERO */}
-      <section className="container" style={{ padding: "clamp(56px, 9vw, 96px) clamp(20px, 5vw, 48px) clamp(56px, 8vw, 84px)" }}>
-        <div style={{ width: "60px", height: "1.5px", background: "var(--accent)", marginBottom: "40px" }} />
-        <h1 style={{ fontSize: "clamp(40px, 8vw, 72px)", lineHeight: 1.02, maxWidth: "15ch" }}>
-          Cardiología con el tiempo que tu <span style={{ fontStyle: "italic", color: "var(--accent)" }}>corazón</span> necesita.
-        </h1>
-        <p style={{ fontSize: "clamp(17px, 2.4vw, 20px)", lineHeight: 1.6, color: "var(--text-muted)", maxWidth: "52ch", marginTop: "28px" }}>
-          Dos cardiólogos en el centro de Bahía Blanca. Atendemos sin apuro, pedimos solo lo necesario y te seguimos de cabecera a largo plazo.
-        </p>
-        <div style={{ display: "flex", gap: "14px", marginTop: "40px", flexWrap: "wrap" }}>
-          <Button variant="primary" size="lg" href={ROUTES.turnos}>
-            Pedir turno por WhatsApp
-          </Button>
-          <Button variant="secondary" size="lg" href={ROUTES.como}>
-            Cómo trabajamos
-          </Button>
+      <section className="hero">
+        {HERO_VIDEO ? (
+          <>
+            <HeroVideo src={HERO_VIDEO} poster={HERO_POSTER} />
+            <div className="hero-scrim" aria-hidden="true" />
+          </>
+        ) : null}
+        <div
+          className="container hero-content"
+          style={{ padding: "clamp(56px, 9vw, 96px) clamp(20px, 5vw, 48px) clamp(56px, 8vw, 84px)" }}
+        >
+          <div style={{ width: "60px", height: "1.5px", background: "var(--accent)", marginBottom: "40px" }} />
+          <h1 style={{ fontSize: "clamp(40px, 8vw, 72px)", lineHeight: 1.02, maxWidth: "15ch" }}>
+            Cardiología con el tiempo que tu <span style={{ fontStyle: "italic", color: "var(--accent)" }}>corazón</span> necesita.
+          </h1>
+          <p style={{ fontSize: "clamp(17px, 2.4vw, 20px)", lineHeight: 1.6, color: "var(--text-muted)", maxWidth: "52ch", marginTop: "28px" }}>
+            Dos cardiólogos en el centro de Bahía Blanca. Atendemos sin apuro, pedimos solo lo necesario y te seguimos de cabecera a largo plazo.
+          </p>
+          <div style={{ display: "flex", gap: "14px", marginTop: "40px", flexWrap: "wrap" }}>
+            <Button variant="primary" size="lg" href={ROUTES.turnos}>
+              Pedir turno por WhatsApp
+            </Button>
+            <Button variant="secondary" size="lg" href={ROUTES.como}>
+              Cómo trabajamos
+            </Button>
+          </div>
         </div>
       </section>
 
