@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
-import { Badge, Button, Callout } from "@/components/ui";
+import { Badge, Button } from "@/components/ui";
+import { Isotipo } from "@/components/site/Isotipo";
 import { DOCTORS, ROUTES } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -89,9 +90,28 @@ export default function CardiologosPage() {
       })}
 
       <section className="container" style={{ padding: "clamp(48px, 7vw, 64px) clamp(20px, 5vw, 48px) clamp(64px, 9vw, 96px)" }}>
-        <Callout title="El punto medio es deliberado">
-          Marca la paridad. Nunca se reemplaza por «y», ni se ordena por antigüedad o cargo.
-        </Callout>
+        <div
+          style={{
+            background: "var(--surface-panel)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-md)",
+            padding: "clamp(24px, 4vw, 32px) clamp(24px, 4vw, 36px)",
+            display: "flex",
+            gap: "clamp(20px, 4vw, 36px)",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <Isotipo size={92} />
+          <div style={{ flex: 1, minWidth: "min(100%, 280px)" }}>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: "20px", color: "var(--text-strong)", marginBottom: "6px" }}>
+              El punto medio es deliberado
+            </div>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "15px", lineHeight: 1.65, color: "var(--text-body)" }}>
+              Marca la paridad. Nunca se reemplaza por «y», ni se ordena por antigüedad o cargo.
+            </p>
+          </div>
+        </div>
         <div style={{ marginTop: "32px", textAlign: "center" }}>
           <Button variant="primary" size="lg" href={ROUTES.turnos}>
             Pedir turno por WhatsApp
