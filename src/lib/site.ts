@@ -13,10 +13,10 @@
 
 /**
  * WhatsApp en formato E.164 sin "+".
- * Línea (0291) 452-0275 → +54 291 452-0275. Es línea fija, por eso va SIN el
- * "9" de los celulares. Si el WhatsApp fuera un celular, sería 5492914520275.
+ * (0291) 452-0275 → +54 9 291 452-0275. En Argentina el número de WhatsApp
+ * lleva el "9" después del código de país (54) + el área (291) + el número.
  */
-export const WHATSAPP_E164 = "542914520275";
+export const WHATSAPP_E164 = "5492914520275";
 
 /** Cómo se muestra el teléfono en pantalla. */
 export const PHONE_DISPLAY = "0291 452-0275";
