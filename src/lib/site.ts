@@ -7,15 +7,19 @@
  */
 
 // ───────────────────────────────────────────────────────────────────────────
-// ⚠️  TODO: REEMPLAZAR POR LOS DATOS REALES DEL CONSULTORIO
-//     Hoy son los placeholders del manual de marca (terminados en 0000).
+// Datos de contacto del consultorio.
+// PENDIENTE: franja horaria por médico, email y obras sociales que atienden.
 // ───────────────────────────────────────────────────────────────────────────
 
-/** WhatsApp en formato E.164 sin "+" (Argentina: 549 + área + número). PLACEHOLDER. */
-export const WHATSAPP_E164 = "5492910000000"; // TODO: número real
+/**
+ * WhatsApp en formato E.164 sin "+".
+ * Línea (0291) 452-0275 → +54 291 452-0275. Es línea fija, por eso va SIN el
+ * "9" de los celulares. Si el WhatsApp fuera un celular, sería 5492914520275.
+ */
+export const WHATSAPP_E164 = "542914520275";
 
-/** Cómo se muestra el teléfono en pantalla. PLACEHOLDER. */
-export const PHONE_DISPLAY = "0291 000-0000"; // TODO: número real
+/** Cómo se muestra el teléfono en pantalla. */
+export const PHONE_DISPLAY = "0291 452-0275";
 
 // ───────────────────────────────────────────────────────────────────────────
 
