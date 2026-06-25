@@ -1,26 +1,407 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   Cardiología Barrio · Scarano — sistema de diseño «Carta»
+   Tokens + base del manual de marca, inlineados para el sitio en Next.
+   Fuentes: servidas por next/font (ver app/layout.tsx) y expuestas como
+   --font-spectral / --font-hanken; acá se mapean a --font-display/--font-body.
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---- Familias ------------------------------------------------------- */
+  --font-display: var(--font-spectral), Georgia, "Times New Roman", serif; /* títulos, la voz */
+  --font-body: var(--font-hanken), system-ui, -apple-system, "Segoe UI", sans-serif; /* texto, UI */
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* captions specimen */
+  --font-sc: var(--font-spectral), Georgia, serif; /* small-caps labels (fallback a Spectral) */
+
+  /* ---- Pesos ---------------------------------------------------------- */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* ---- Escala tipográfica (px) --------------------------------------- */
+  --text-display: 58px;
+  --text-h1: 44px;
+  --text-h2: 33px;
+  --text-h3: 24px;
+  --text-lead: 21px;
+  --text-body-lg: 18px;
+  --text-base: 16px;
+  --text-sm: 14px;
+  --text-xs: 12px;
+  --text-label: 11px;
+
+  /* ---- Interlineado --------------------------------------------------- */
+  --lh-tight: 1.05;
+  --lh-snug: 1.2;
+  --lh-normal: 1.45;
+  --lh-relaxed: 1.7;
+
+  /* ---- Tracking ------------------------------------------------------- */
+  --ls-display: -0.015em;
+  --ls-normal: 0;
+  --ls-label: 0.2em;
+  --ls-lockup: 0.34em;
+
+  /* ---- Paleta base · "Carta" ----------------------------------------- */
+  --paper: oklch(0.972 0.008 75); /* #F6F3ED crema cálido — fondo primario */
+  --paper-dim: oklch(0.9 0.008 75);
+  --panel: oklch(0.945 0.012 70); /* #EEE9E0 fondo secundario / tints */
+  --line: oklch(0.88 0.01 75); /* #E2DCD2 hairlines y bordes */
+  --ink: oklch(0.24 0.015 55); /* #2B2722 warm near-black — texto/fondo */
+  --ink-body: oklch(0.4 0.015 55); /* #5E574F cuerpo de texto */
+  --ink-soft: oklch(0.45 0.015 55); /* #6E665E texto secundario / captions */
+  --clay: oklch(0.55 0.135 35); /* #B0492F el único acento cálido */
+  --clay-deep: oklch(0.47 0.12 34); /* pressed / hover */
+  --clay-bright: oklch(0.8 0.1 40); /* acento legible SOBRE tinta */
+  --blush: oklch(0.92 0.03 40); /* #F3E4DC tint de acento más suave */
+
+  /* ---- Semántica · texto --------------------------------------------- */
+  --text-strong: var(--ink);
+  --text-body: var(--ink-body);
+  --text-muted: var(--ink-soft);
+  --text-on-ink: var(--paper);
+  --text-on-clay: var(--paper);
+  /* Etiquetas chicas (11px) sobre arcilla: near-white cálido que cumple WCAG AA. */
+  --label-on-clay: oklch(0.99 0.006 70);
+  --text-link: var(--clay);
+
+  /* ---- Semántica · superficie ---------------------------------------- */
+  --surface-page: var(--paper);
+  --surface-card: var(--paper);
+  --surface-panel: var(--panel);
+  --surface-ink: var(--ink);
+  --surface-clay: var(--clay);
+  --surface-blush: var(--blush);
+
+  /* ---- Semántica · línea / acento ------------------------------------ */
+  --border: var(--line);
+  --border-strong: var(--ink);
+  --accent: var(--clay);
+  --accent-hover: var(--clay-deep);
+  --accent-contrast: var(--paper);
+  --accent-soft: var(--blush);
+
+  /* ---- Estados (apagados, registro cálido) --------------------------- */
+  --success: oklch(0.55 0.07 155);
+  --warning: oklch(0.66 0.1 75);
+  --danger: oklch(0.52 0.13 32);
+  --info: var(--ink-soft);
+  --focus: var(--clay);
+
+  /* ---- Espacio (ritmo base 4px) -------------------------------------- */
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+  --space-5xl: 128px;
+
+  /* ---- Layout --------------------------------------------------------- */
+  --gutter: 24px;
+  --page-pad: 96px;
+  --page-pad-sm: 24px;
+  --maxw: 1080px;
+  --maxw-wide: 1280px;
+  --maxw-prose: 64ch;
+
+  /* ---- Radio (editorial = casi recto) -------------------------------- */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+  --radius-card: var(--radius-md);
+
+  /* ---- Bordes --------------------------------------------------------- */
+  --border-hair: 1px solid var(--border);
+
+  /* ---- Sombras (cálidas, bajas, suaves) ------------------------------ */
+  --shadow-xs: 0 1px 2px rgba(40, 30, 20, 0.06);
+  --shadow-sm: 0 1px 3px rgba(40, 30, 20, 0.08);
+  --shadow-md: 0 8px 24px rgba(40, 30, 20, 0.1);
+  --shadow-lg: 0 6px 44px rgba(40, 30, 20, 0.16);
+
+  /* ---- Focus ring ----------------------------------------------------- */
+  --ring: 0 0 0 3px color-mix(in oklch, var(--clay) 26%, transparent);
+
+  /* ---- Movimiento ----------------------------------------------------- */
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 360ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================================================
+   Base — resets ligeros + defaults de marca
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Evita que el contenido quede tapado por el header sticky al navegar a anclas. */
+  scroll-padding-top: 80px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-light);
+  color: var(--text-strong);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-snug);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--text-link);
+  text-underline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--clay);
+  color: var(--paper);
+}
+
+.u-eyebrow {
+  font-family: var(--font-body);
+  font-weight: var(--fw-semibold);
+  font-size: var(--text-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.u-mono {
+  font-family: var(--font-mono);
+}
+
+/* Solo para lectores de pantalla. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Saltar al contenido — visible solo al recibir foco con teclado. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+.skip-link:focus {
+  left: 12px;
+  top: 12px;
+  box-shadow: var(--ring);
+}
+
+/* Fallback de foco para modo de alto contraste / forced-colors, donde el
+   box-shadow del --ring se descarta. En modo normal el ring JS ya es visible. */
+@media (forced-colors: active) {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* Respeta a quien pide menos movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   Layout helpers — responsivos (el kit original era solo desktop).
+   Las páginas usan estas clases para las grillas que deben colapsar en mobile;
+   el resto del look vive en estilos inline con los tokens de arriba.
+   ========================================================================== */
+
+/* Ancho de columna del sitio + padding lateral fluido. */
+.container {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 48px);
+}
+
+/* Grilla simétrica de 2 columnas → 1 en mobile. */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gutter);
+}
+
+/* Grilla "tabla editorial": celdas papel separadas por hairlines de 1px. */
+.hairline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+/* Sección médico (foto + datos), alterna orden por índice via .reverse. */
+.doc-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+/* Sección espejada (médico alterno): foto a la derecha en desktop. */
+.doc-grid.reverse {
+  grid-template-columns: 1fr 0.9fr;
+}
+.doc-grid.reverse .doc-media {
+  order: 2;
+}
+.doc-grid.reverse .doc-body {
+  order: 1;
+}
+
+.turnos-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 40px;
+}
+
+@media (max-width: 860px) {
+  .doc-grid,
+  .doc-grid.reverse,
+  .turnos-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  /* En mobile la foto siempre va primero, sin importar el orden de desktop. */
+  .doc-grid .doc-media,
+  .doc-grid.reverse .doc-media {
+    order: -1;
+  }
+  .doc-grid .doc-body,
+  .doc-grid.reverse .doc-body {
+    order: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .grid-2,
+  .hairline-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+/* ============================================================================
+   Header / navegación responsiva (botón menú en mobile)
+   ========================================================================== */
+
+/* Display vive en CSS (no inline) para que el media query pueda ocultar/mostrar
+   el dropdown en mobile — un display inline ganaría siempre. */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.site-burger {
+  display: none;
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  width: 40px;
+  height: 36px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-strong);
+}
+
+@media (max-width: 720px) {
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 4px !important;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    padding: 12px clamp(20px, 5vw, 48px) 20px;
+  }
+  .site-nav[data-open="false"] {
+    display: none;
+  }
+  .site-burger {
+    display: inline-flex;
+  }
 }

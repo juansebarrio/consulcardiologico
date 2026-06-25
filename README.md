@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cardiología Barrio · Scarano
 
-## Getting Started
+Sitio web del consultorio de cardiología de los Dres. **Juan Pablo Barrio** y **Cynthia Scarano**, en el centro de Bahía Blanca.
 
-First, run the development server:
+> Cardiología con el tiempo que tu corazón necesita.
+
+Construido a partir del manual de marca «Carta» (registro editorial cálido): papel crema, tinta cálida, un único acento arcilla y el punto medio «·» como símbolo. Tipografías **Spectral** (la voz) + **Hanken Grotesk** (el sistema).
+
+## Stack
+
+- **Next.js 16** (App Router) · **React 19** · **TypeScript**
+- **Tailwind CSS v4** (base) + sistema de diseño propio por tokens CSS (estilos inline sobre variables)
+- Fuentes auto-hospedadas con `next/font/google`
+- Imágenes con `next/image`
+
+## Páginas
+
+| Ruta | Contenido |
+|---|---|
+| `/` | Home — hero, cuatro compromisos, los dos cardiólogos, pilares |
+| `/cardiologos` | Los cardiólogos — perfiles en paridad |
+| `/como-trabajamos` | Cómo trabajamos — pilares, compromisos clínicos, FAQ |
+| `/turnos` | Turnos — formulario que abre WhatsApp + mapa del consultorio |
+
+## Desarrollo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # build de producción
+npm start        # servir el build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚠️ Antes de publicar — datos a completar
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Los datos de contacto son **placeholders del manual** y se cambian en **un solo lugar**:
+`src/lib/site.ts`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `WHATSAPP_E164` — número de WhatsApp real (formato `549` + área + número, sin `+`).
+- `PHONE_DISPLAY` — cómo se muestra el teléfono.
+- `SITE.url` — dominio de producción (usado en metadata, OpenGraph, sitemap y robots).
 
-## Learn More
+La dirección (Martiniano Rodríguez 415, Bahía Blanca), los horarios y los datos de los
+médicos también viven en `src/lib/site.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+## Estructura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+  app/                 layout, páginas, globals.css, icon.svg, opengraph-image, sitemap, robots
+  components/
+    ui/                primitivas de marca (Button, Card, Badge, Callout, Accordion, form fields)
+    site/              Header, Footer, TurnosForm
+  lib/site.ts          configuración central (contacto, médicos, horarios, navegación)
+public/doctores/       retratos de los médicos
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy en Vercel
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El proyecto está listo para `vercel`/`vercel --prod`. Recordá setear `SITE.url` y los datos de
+contacto reales antes de promover a producción.
