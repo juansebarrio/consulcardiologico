@@ -59,6 +59,19 @@ export const ROUTES = {
 } as const;
 
 /**
+ * URL base canónica para metadata, OpenGraph, sitemap y robots.
+ *
+ * En Vercel usa `VERCEL_PROJECT_PRODUCTION_URL` — el dominio de producción real, que
+ * pasa a ser tu dominio custom AUTOMÁTICAMENTE cuando conectás `SITE.url` en Vercel.
+ * Fuera de Vercel (local) cae a `SITE.url`. Así el canonical/OG nunca apuntan a un
+ * dominio que todavía no existe.
+ */
+export function siteUrl(): string {
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  return vercel ? `https://${vercel}` : SITE.url;
+}
+
+/**
  * Construye el link de WhatsApp con un mensaje pre-cargado.
  * Si no pasás texto, abre el chat vacío.
  */
