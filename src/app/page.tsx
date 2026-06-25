@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { Badge, Button, Callout, Card } from "@/components/ui";
+import { Asistente } from "@/components/site/Asistente";
 import { HeroVideo } from "@/components/site/HeroVideo";
 import { COMPROMISOS, DOCTORS, HERO_POSTER, HERO_VIDEO, ROUTES } from "@/lib/site";
 
@@ -21,7 +22,11 @@ export default function HomePage() {
         >
           <div style={{ width: "60px", height: "1.5px", background: "var(--accent)", marginBottom: "40px" }} />
           <h1 style={{ fontSize: "clamp(40px, 8vw, 72px)", lineHeight: 1.02, maxWidth: "15ch" }}>
-            Cardiología con el tiempo que tu <span style={{ fontStyle: "italic", color: "var(--accent)" }}>corazón</span> necesita.
+            Cardiología con el tiempo que tu{" "}
+            <span className="pulse-heart" style={{ fontStyle: "italic", color: "var(--accent)" }}>
+              corazón
+            </span>{" "}
+            necesita.
           </h1>
           <p style={{ fontSize: "clamp(17px, 2.4vw, 20px)", lineHeight: 1.6, color: "var(--text-muted)", maxWidth: "52ch", marginTop: "28px" }}>
             Dos cardiólogos en el centro de Bahía Blanca. Atendemos sin apuro, pedimos solo lo necesario y te seguimos de cabecera a largo plazo.
@@ -57,6 +62,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ASISTENTE VIRTUAL (chat con IA) */}
+      <Asistente />
 
       {/* CARDIÓLOGOS */}
       <section className="container" style={{ padding: "clamp(56px, 9vw, 88px) clamp(20px, 5vw, 48px)" }}>

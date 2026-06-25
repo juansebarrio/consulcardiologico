@@ -334,6 +334,60 @@ img {
   }
 }
 
+/* Latido suave en la palabra «corazón» del hero — guiño cardiológico, sin apuro.
+   Doble pulso (lub-dub) y pausa. Se detiene con prefers-reduced-motion (la regla
+   global de arriba neutraliza animation-duration). */
+@keyframes latido {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(1.08);
+  }
+  24% {
+    transform: scale(1);
+  }
+  36% {
+    transform: scale(1.045);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+.pulse-heart {
+  display: inline-block;
+  transform-origin: center;
+  animation: latido 1.8s var(--ease) infinite;
+}
+
+/* Asistente virtual — indicador «escribiendo» (tres puntos). La regla global de
+   prefers-reduced-motion de arriba neutraliza la animación. */
+@keyframes asistente-blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+.asistente-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  display: inline-block;
+  animation: asistente-blink 1.4s var(--ease) infinite both;
+}
+.asistente-typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.asistente-typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
 /* Grilla simétrica de 2 columnas → 1 en mobile. */
 .grid-2 {
   display: grid;
