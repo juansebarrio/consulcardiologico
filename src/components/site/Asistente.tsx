@@ -19,6 +19,7 @@ import { DefaultChatTransport } from "ai";
 
 import { Button } from "@/components/ui";
 import { Isotipo } from "@/components/site/Isotipo";
+import { RichText } from "@/components/site/RichText";
 import { buildTurnoWhatsApp, SUGERENCIAS, TURNO_CAMPOS, type TurnoInput } from "@/lib/asistente";
 import { whatsappLink } from "@/lib/site";
 import type { AsistenteMessage } from "@/app/api/asistente/route";
@@ -243,9 +244,10 @@ export function Asistente() {
                   <div key={m.id} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {m.parts.map((part, i) => {
                       if (part.type === "text") {
+                        const isUser = m.role === "user";
                         return (
-                          <Bubble key={`${m.id}-${i}`} role={m.role === "user" ? "user" : "assistant"}>
-                            {part.text}
+                          <Bubble key={`${m.id}-${i}`} role={isUser ? "user" : "assistant"}>
+                            {isUser ? part.text : <RichText text={part.text} />}
                           </Bubble>
                         );
                       }
@@ -335,11 +337,11 @@ export function Asistente() {
                 }}
               />
               {busy ? (
-                <Button variant="secondary" onClick={() => stop()}>
+                <Button variant="secondary" pill onClick={() => stop()}>
                   Detener
                 </Button>
               ) : (
-                <Button type="submit" variant="primary" disabled={!input.trim()}>
+                <Button type="submit" variant="primary" pill disabled={!input.trim()}>
                   Enviar
                 </Button>
               )}

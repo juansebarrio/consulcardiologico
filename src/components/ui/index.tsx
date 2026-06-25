@@ -26,6 +26,8 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   full?: boolean;
+  /** Forma de píldora (borde totalmente redondeado), p. ej. dentro de barras pill. */
+  pill?: boolean;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   children?: ReactNode;
@@ -42,6 +44,7 @@ export function Button({
   type = "button",
   disabled = false,
   full = false,
+  pill = false,
   iconLeft = null,
   iconRight = null,
   children,
@@ -89,7 +92,7 @@ export function Button({
     fontWeight: 600,
     lineHeight: 1,
     letterSpacing: ".01em",
-    borderRadius: "var(--radius-md)",
+    borderRadius: pill ? "var(--radius-pill)" : "var(--radius-md)",
     border: "1px solid transparent",
     cursor: disabled ? "not-allowed" : "pointer",
     textDecoration: "none",
