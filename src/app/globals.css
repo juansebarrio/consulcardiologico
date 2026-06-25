@@ -436,6 +436,35 @@ img {
   z-index: 0;
 }
 
+/* ============================================================================
+   Pop-up de «Pedir turno» (components/site/TurnoModal.tsx)
+   Entrada suave; prefers-reduced-motion (regla global de arriba) la neutraliza.
+   ========================================================================== */
+@keyframes turno-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes turno-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.turno-overlay {
+  animation: turno-overlay-in var(--dur) var(--ease) both;
+}
+.turno-dialog {
+  animation: turno-dialog-in var(--dur-slow) var(--ease-out) both;
+}
+
 /* Grilla simétrica de 2 columnas → 1 en mobile. */
 .grid-2 {
   display: grid;

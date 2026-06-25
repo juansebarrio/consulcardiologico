@@ -3,6 +3,7 @@ import { Spectral, Hanken_Grotesk } from "next/font/google";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { TurnoModal } from "@/components/site/TurnoModal";
 import { SITE, siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -72,6 +73,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <TurnoModal />
       </body>
     </html>
   );
