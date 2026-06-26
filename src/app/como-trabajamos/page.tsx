@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { Accordion, Button } from "@/components/ui";
+import { PilarIcon } from "@/components/site/PilarIcon";
 import { COMPROMISOS, PILARES, ROUTES } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -63,8 +64,10 @@ export default function ComoTrabajamosPage() {
           <div className="hairline-grid">
             {PILARES.map(([t, d], i) => (
               <div key={t} style={{ background: "var(--paper)", padding: "40px 38px" }}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: "14px" }}>
-                  <span style={{ fontFamily: "var(--font-display)", fontSize: "14px", color: "var(--accent)" }}>{"0" + (i + 1)}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                  <span style={{ color: "var(--accent)", display: "inline-flex", flexShrink: 0 }}>
+                    <PilarIcon index={i} />
+                  </span>
                   <span style={{ fontFamily: "var(--font-display)", fontSize: "clamp(26px, 4vw, 32px)", color: "var(--text-strong)" }}>{t}</span>
                 </div>
                 <p style={{ fontSize: "15px", lineHeight: 1.7, color: "var(--text-muted)", marginTop: "16px" }}>{d}</p>
