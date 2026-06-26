@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { Badge, Button, Callout, Card } from "@/components/ui";
 import { Asistente } from "@/components/site/Asistente";
+import { CompromisoIcon } from "@/components/site/CompromisoIcon";
 import { HeroVideo } from "@/components/site/HeroVideo";
 import { COMPROMISOS, DOCTORS, HERO_POSTER, HERO_VIDEO, ROUTES } from "@/lib/site";
 
@@ -50,9 +51,9 @@ export default function HomePage() {
           </div>
           <div className="hairline-grid">
             {COMPROMISOS.map((t, i) => (
-              <div key={t} style={{ background: "var(--paper)", padding: "40px 38px", display: "flex", gap: "24px", alignItems: "flex-start" }}>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "34px", color: "var(--accent)", lineHeight: 1 }}>
-                  {String(i + 1).padStart(2, "0")}
+              <div key={t} style={{ background: "var(--paper)", padding: "40px 38px", display: "flex", gap: "20px", alignItems: "flex-start" }}>
+                <span style={{ color: "var(--accent)", display: "inline-flex", flexShrink: 0, marginTop: "2px" }}>
+                  <CompromisoIcon index={i} size={30} />
                 </span>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(21px, 3vw, 25px)", lineHeight: 1.28, color: "var(--text-strong)" }}>
                   {t}

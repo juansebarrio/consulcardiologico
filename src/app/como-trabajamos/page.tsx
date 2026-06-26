@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { Accordion, Button } from "@/components/ui";
+import { CompromisoIcon } from "@/components/site/CompromisoIcon";
 import { PilarIcon } from "@/components/site/PilarIcon";
 import { COMPROMISOS, PILARES, ROUTES } from "@/lib/site";
 
@@ -88,15 +89,15 @@ export default function ComoTrabajamosPage() {
               key={t}
               style={{
                 display: "flex",
-                alignItems: "baseline",
+                alignItems: "center",
                 gap: "clamp(16px, 4vw, 32px)",
                 padding: "26px 0",
                 borderTop: "1px solid rgba(246,243,237,.28)",
                 borderBottom: i === COMPROMISOS.length - 1 ? "1px solid rgba(246,243,237,.28)" : "none",
               }}
             >
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(32px, 6vw, 46px)", color: "var(--blush)", width: "70px", flexShrink: 0, lineHeight: 0.9 }}>
-                {"0" + (i + 1)}
+              <span style={{ color: "var(--blush)", display: "inline-flex", justifyContent: "center", flexShrink: 0, width: "clamp(44px, 8vw, 60px)" }}>
+                <CompromisoIcon index={i} size={38} />
               </span>
               <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(22px, 4vw, 32px)", lineHeight: 1.25 }}>{t}</span>
             </div>
