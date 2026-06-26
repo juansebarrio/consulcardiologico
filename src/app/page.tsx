@@ -77,7 +77,7 @@ export default function HomePage() {
         <div className="grid-2" style={{ gap: "32px" }}>
           {DOCTORS.map((d) => (
             <Card key={d.slug} variant="default" padding="0" style={{ overflow: "hidden" }}>
-              <div style={{ position: "relative", aspectRatio: "4 / 3", overflow: "hidden" }}>
+              <div style={{ position: "relative", aspectRatio: "4 / 5", overflow: "hidden" }}>
                 <Image
                   src={d.image}
                   alt={`Retrato de ${d.name}`}
