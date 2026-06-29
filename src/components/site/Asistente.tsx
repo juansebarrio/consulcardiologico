@@ -22,7 +22,7 @@ import { Isotipo } from "@/components/site/Isotipo";
 import { RichText } from "@/components/site/RichText";
 import { VoiceAgent } from "@/components/site/VoiceAgent";
 import { buildTurnoWhatsApp, SUGERENCIAS, TURNO_CAMPOS, type TurnoInput } from "@/lib/asistente";
-import { whatsappLink } from "@/lib/site";
+import { ELEVENLABS_AGENT_ID, whatsappLink } from "@/lib/site";
 import type { AsistenteMessage } from "@/app/api/asistente/route";
 
 function WhatsAppIcon() {
@@ -128,7 +128,7 @@ export function Asistente() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Modo voz (ElevenLabs): solo se ofrece si hay un agente configurado.
-  const voiceAgentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID;
+  const voiceAgentId = ELEVENLABS_AGENT_ID;
 
   const busy = status === "submitted" || status === "streaming";
   const isEmpty = messages.length === 0;
