@@ -21,6 +21,16 @@ export const WHATSAPP_E164 = "5492914161833";
 /** Cómo se muestra el teléfono en pantalla. */
 export const PHONE_DISPLAY = "0291 416-1833";
 
+/**
+ * Agente de voz de ElevenLabs — opción «Hablar» del asistente.
+ * El agentId es PÚBLICO (viaja al navegador y figura en la URL de «talk-to»),
+ * por eso puede vivir acá. Override opcional con NEXT_PUBLIC_ELEVENLABS_AGENT_ID.
+ * El agente debe estar configurado como público en ElevenLabs (Security → sin
+ * autenticación) para poder conectar desde el navegador solo con el agentId.
+ */
+export const ELEVENLABS_AGENT_ID =
+  process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || "agent_3101kw9xzc0ffw0t8yzmasdstmdf";
+
 // ───────────────────────────────────────────────────────────────────────────
 
 export const SITE = {
