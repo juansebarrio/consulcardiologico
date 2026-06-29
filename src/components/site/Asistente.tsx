@@ -20,6 +20,7 @@ import { DefaultChatTransport } from "ai";
 import { Button } from "@/components/ui";
 import { Isotipo } from "@/components/site/Isotipo";
 import { RichText } from "@/components/site/RichText";
+import { VoiceAgent } from "@/components/site/VoiceAgent";
 import { buildTurnoWhatsApp, SUGERENCIAS, TURNO_CAMPOS, type TurnoInput } from "@/lib/asistente";
 import { whatsappLink } from "@/lib/site";
 import type { AsistenteMessage } from "@/app/api/asistente/route";
@@ -123,7 +124,11 @@ export function Asistente() {
   });
   const [input, setInput] = useState("");
   const [focused, setFocused] = useState(false);
+  const [mode, setMode] = useState<"text" | "voice">("text");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Modo voz (ElevenLabs): solo se ofrece si hay un agente configurado.
+  const voiceAgentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID;
 
   const busy = status === "submitted" || status === "streaming";
   const isEmpty = messages.length === 0;
@@ -181,7 +186,64 @@ export function Asistente() {
           te dejo el turno casi listo para enviar por WhatsApp.
         </p>
 
-        {/* Panel de chat — integrado, con halo */}
+        {/* Toggle Escribir / Hablar — el chat de texto es la opción principal;
+            «Hablar» abre el agente de voz (solo si hay agente configurado). */}
+        {voiceAgentId ? (
+          <div
+            role="radiogroup"
+            aria-label="Modo de conversación"
+            style={{
+              display: "inline-flex",
+              gap: "4px",
+              marginTop: "24px",
+              padding: "4px",
+              background: "var(--surface-panel)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-pill)",
+            }}
+          >
+            {(
+              [
+                ["text", "Escribir"],
+                ["voice", "Hablar"],
+              ] as const
+            ).map(([m, label]) => {
+              const active = mode === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => setMode(m)}
+                  style={{
+                    appearance: "none",
+                    cursor: "pointer",
+                    fontFamily: "var(--font-body)",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    padding: "8px 20px",
+                    borderRadius: "var(--radius-pill)",
+                    border: "none",
+                    background: active ? "var(--accent)" : "transparent",
+                    color: active ? "var(--accent-contrast)" : "var(--text-strong)",
+                    transition: "background var(--dur) var(--ease), color var(--dur) var(--ease)",
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+
+        {/* Panel: agente de voz (si elegiste «Hablar») o chat de texto */}
+        {mode === "voice" && voiceAgentId ? (
+          <div style={{ position: "relative", marginTop: "36px" }}>
+            <span className="asistente-panel-glow" aria-hidden="true" />
+            <VoiceAgent agentId={voiceAgentId} />
+          </div>
+        ) : (
         <div style={{ position: "relative", marginTop: "36px" }}>
           <span className="asistente-panel-glow" aria-hidden="true" />
           <div
@@ -348,6 +410,7 @@ export function Asistente() {
             </form>
           </div>
         </div>
+        )}
 
         {/* Aviso médico — siempre visible */}
         <p
