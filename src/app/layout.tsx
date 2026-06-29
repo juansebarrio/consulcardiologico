@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Spectral, Hanken_Grotesk } from "next/font/google";
+import { Spectral, Hanken_Grotesk, Bricolage_Grotesque } from "next/font/google";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -20,6 +20,14 @@ const spectral = Spectral({
 const hanken = Hanken_Grotesk({
   subsets: ["latin"],
   variable: "--font-hanken",
+  display: "swap",
+});
+
+/* Bricolage Grotesque — voz del titular del hero (grotesque con carácter). */
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-bricolage",
   display: "swap",
 });
 
@@ -63,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${spectral.variable} ${hanken.variable}`}>
+    <html lang="es" className={`${spectral.variable} ${hanken.variable} ${bricolage.variable}`}>
       <body style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
         <a href="#main" className="skip-link">
           Saltar al contenido
