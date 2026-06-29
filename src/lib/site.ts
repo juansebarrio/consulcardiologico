@@ -13,13 +13,13 @@
 
 /**
  * WhatsApp en formato E.164 sin "+".
- * (0291) 452-0275 → +54 9 291 452-0275. En Argentina el número de WhatsApp
+ * (0291) 416-1833 → +54 9 291 416-1833. En Argentina el número de WhatsApp
  * lleva el "9" después del código de país (54) + el área (291) + el número.
  */
-export const WHATSAPP_E164 = "5492914520275";
+export const WHATSAPP_E164 = "5492914161833";
 
 /** Cómo se muestra el teléfono en pantalla. */
-export const PHONE_DISPLAY = "0291 452-0275";
+export const PHONE_DISPLAY = "0291 416-1833";
 
 // ───────────────────────────────────────────────────────────────────────────
 
