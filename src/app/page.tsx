@@ -22,9 +22,18 @@ export default function HomePage() {
           style={{ padding: "clamp(56px, 9vw, 96px) clamp(20px, 5vw, 48px) clamp(56px, 8vw, 84px)" }}
         >
           <div style={{ width: "60px", height: "1.5px", background: "var(--accent)", marginBottom: "40px" }} />
-          <h1 style={{ fontSize: "clamp(40px, 8vw, 72px)", lineHeight: 1.02, maxWidth: "15ch" }}>
+          <h1
+            style={{
+              fontFamily: "var(--font-bricolage), system-ui, sans-serif",
+              fontWeight: 600,
+              letterSpacing: "-0.02em",
+              fontSize: "clamp(40px, 8vw, 72px)",
+              lineHeight: 1.03,
+              maxWidth: "15ch",
+            }}
+          >
             Cardiología con el tiempo que tu{" "}
-            <span className="pulse-heart" style={{ fontStyle: "italic", color: "var(--accent)" }}>
+            <span className="pulse-heart" style={{ color: "var(--accent)" }}>
               corazón
             </span>{" "}
             necesita.
