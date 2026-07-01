@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { NAV, PHONE_DISPLAY, ROUTES, SITE } from "@/lib/site";
+import { NAV, PHONE_DISPLAY, PHONE_TEL, ROUTES, SITE, whatsappLink } from "@/lib/site";
 
 export function Footer() {
   return (
@@ -50,6 +50,8 @@ export function Footer() {
               {SITE.address.line1}
               <br />
               {SITE.address.line2}
+              <br />
+              <span style={{ color: "var(--clay-bright)" }}>Cómo llegar →</span>
             </Link>
           </address>
           <nav style={{ display: "flex", flexDirection: "column", gap: "6px", marginTop: "18px" }} aria-label="Secundaria">
@@ -69,7 +71,21 @@ export function Footer() {
             Turnos
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.8, color: "rgba(246,243,237,.82)", marginTop: "14px" }}>
-            WhatsApp · {PHONE_DISPLAY}
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: "3px", display: "inline-block", padding: "4px 0" }}
+            >
+              WhatsApp · {PHONE_DISPLAY}
+            </a>
+            <br />
+            <a
+              href={`tel:${PHONE_TEL}`}
+              style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: "3px", display: "inline-block", padding: "4px 0" }}
+            >
+              Llamar · {PHONE_DISPLAY}
+            </a>
             <br />
             {SITE.schedule.map((s) => (
               <span key={s.quien}>
