@@ -3,14 +3,14 @@ import Image from "next/image";
 
 import { Badge, Button } from "@/components/ui";
 import { Isotipo } from "@/components/site/Isotipo";
-import { DOCTORS, ROUTES } from "@/lib/site";
+import { DOCTORS, pageMeta, ROUTES } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Los cardiólogos",
+export const metadata: Metadata = pageMeta({
+  title: "Dr. Barrio y Dra. Scarano — Cardiólogos en Bahía Blanca",
   description:
     "Dr. Juan Pablo Barrio y Dra. Cynthia Scarano: dos cardiólogos en paridad, una misma manera de trabajar. Hospital Penna, ecocardiografía y seguimiento de cabecera en Bahía Blanca.",
-  alternates: { canonical: ROUTES.cardiologos },
-};
+  path: ROUTES.cardiologos,
+});
 
 export default function CardiologosPage() {
   return (
@@ -45,6 +45,10 @@ export default function CardiologosPage() {
                     alt={`Retrato de ${d.name}`}
                     fill
                     sizes="(max-width: 860px) 100vw, 480px"
+                    // El primer retrato está above-the-fold: precargarlo evita
+                    // el anti-patrón lazy-LCP. (`preload` reemplaza a `priority`
+                    // en Next 16 — ver docs bundleados de next/image.)
+                    preload={i === 0}
                     style={{ objectFit: "cover", objectPosition: d.pos, filter: "saturate(.92)" }}
                   />
                 </div>
@@ -52,7 +56,7 @@ export default function CardiologosPage() {
               <div className="doc-body">
                 <h2 style={{ fontSize: "clamp(28px, 5vw, 36px)" }}>{d.name}</h2>
                 <div style={{ margin: "14px 0 22px" }}>
-                  <Badge variant="soft">{d.dias}</Badge>
+                  <Badge variant="soft">Atiende · {d.dias}</Badge>
                 </div>
                 <p style={{ fontSize: "17px", lineHeight: 1.7, color: "var(--text-body)", maxWidth: "46ch" }}>{d.bioLong}</p>
                 <ul style={{ listStyle: "none", padding: 0, margin: "24px 0 0", display: "flex", flexDirection: "column", gap: "10px" }}>

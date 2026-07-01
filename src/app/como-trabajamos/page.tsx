@@ -1,20 +1,70 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { Accordion, Button } from "@/components/ui";
 import { CompromisoIcon } from "@/components/site/CompromisoIcon";
 import { PilarIcon } from "@/components/site/PilarIcon";
-import { COMPROMISOS, PILARES, ROUTES } from "@/lib/site";
+import { COMPROMISOS, pageMeta, PILARES, ROUTES } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Cómo trabajamos",
   description:
     "A contramano del modelo médico de siempre: pedimos solo los estudios necesarios, recetamos solo si hace falta y el seguimiento es de cabecera. Los cuatro pilares y los cuatro compromisos del consultorio.",
-  alternates: { canonical: ROUTES.como },
+  path: ROUTES.como,
+});
+
+/**
+ * Preguntas frecuentes — fuente única: alimenta el Accordion y el JSON-LD de
+ * FAQPage (rich results). Respuestas en texto plano; los enlaces extra se
+ * agregan solo en el render.
+ */
+const FAQ = [
+  {
+    id: "q1",
+    q: "¿Tengo que llevar estudios?",
+    a: "Con lo que tengas alcanza para empezar. Si hace falta algo más, te lo decimos en la consulta.",
+  },
+  {
+    id: "q2",
+    q: "¿Cómo saco un turno?",
+    a: "Por WhatsApp. Te respondemos y buscamos juntos un día tranquilo para verte. También podés usar el asistente virtual de la página de inicio.",
+  },
+  {
+    id: "q3",
+    q: "¿Atienden por obra social?",
+    a: "Contanos cuál tenés cuando nos escribís y te lo confirmamos por WhatsApp.",
+  },
+  {
+    id: "q4",
+    q: "¿Con quién me atiendo?",
+    a: "Depende del día: lunes, miércoles y viernes con el Dr. Barrio; martes y jueves con la Dra. Scarano. Los dos trabajan igual.",
+  },
+  {
+    id: "q5",
+    q: "¿Y después de la consulta?",
+    a: "Seguimos. El seguimiento de cabecera es parte de cómo trabajamos: después del turno también estamos.",
+  },
+] as const;
+
+const FAQ_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
 };
 
 export default function ComoTrabajamosPage() {
   return (
     <div>
+      {/* Datos estructurados: FAQ rich results. El escape de "<" evita cierre
+          prematuro del script si algún texto lo incluyera. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSONLD).replace(/</g, "\\u003c") }}
+      />
       <section className="container" style={{ padding: "clamp(56px, 9vw, 88px) clamp(20px, 5vw, 48px) clamp(40px, 6vw, 56px)" }}>
         <div className="u-eyebrow" style={{ marginBottom: "20px" }}>
           Cómo trabajamos
@@ -31,7 +81,7 @@ export default function ComoTrabajamosPage() {
       {/* comparación */}
       <section className="container" style={{ padding: "0 clamp(20px, 5vw, 48px) clamp(56px, 8vw, 80px)" }}>
         <div className="hairline-grid">
-          <div style={{ background: "var(--surface-panel)", padding: "34px 36px" }}>
+          <div style={{ background: "var(--surface-panel)", padding: "clamp(22px, 4.5vw, 34px) clamp(20px, 5vw, 36px)" }}>
             <div className="u-eyebrow">El modelo de siempre</div>
             <div style={{ fontSize: "16px", lineHeight: 2, color: "var(--text-muted)", marginTop: "14px" }}>
               Estudios de más
@@ -41,7 +91,7 @@ export default function ComoTrabajamosPage() {
               Consultas sueltas
             </div>
           </div>
-          <div style={{ background: "var(--paper)", padding: "34px 36px" }}>
+          <div style={{ background: "var(--paper)", padding: "clamp(22px, 4.5vw, 34px) clamp(20px, 5vw, 36px)" }}>
             <div className="u-eyebrow" style={{ color: "var(--accent)" }}>
               Acá
             </div>
@@ -64,7 +114,7 @@ export default function ComoTrabajamosPage() {
           </div>
           <div className="hairline-grid">
             {PILARES.map(([t, d], i) => (
-              <div key={t} style={{ background: "var(--paper)", padding: "40px 38px" }}>
+              <div key={t} style={{ background: "var(--paper)", padding: "clamp(24px, 5vw, 40px) clamp(20px, 5vw, 38px)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
                   <span style={{ color: "var(--accent)", display: "inline-flex", flexShrink: 0 }}>
                     <PilarIcon index={i} />
@@ -112,20 +162,22 @@ export default function ComoTrabajamosPage() {
         </div>
         <Accordion
           defaultOpen={["q1"]}
-          items={[
-            { id: "q1", title: "¿Tengo que llevar estudios?", content: "Con lo que tengas alcanza para empezar. Si hace falta algo más, te lo decimos en la consulta." },
-            { id: "q2", title: "¿Cómo saco un turno?", content: "Por WhatsApp. Te respondemos y buscamos juntos un día tranquilo para verte." },
-            {
-              id: "q3",
-              title: "¿Con quién me atiendo?",
-              content: "Depende del día: lunes, miércoles y viernes con el Dr. Barrio; martes y jueves con la Dra. Scarano. Los dos trabajan igual.",
-            },
-            {
-              id: "q4",
-              title: "¿Y después de la consulta?",
-              content: "Seguimos. El seguimiento de cabecera es parte de cómo trabajamos: después del turno también estamos.",
-            },
-          ]}
+          items={FAQ.map((f) => ({
+            id: f.id,
+            title: f.q,
+            content:
+              f.id === "q2" ? (
+                <>
+                  Por WhatsApp. Te respondemos y buscamos juntos un día tranquilo para verte. También podés usar el{" "}
+                  <Link href="/#asistente" style={{ color: "var(--accent)", textUnderlineOffset: "3px" }}>
+                    asistente virtual
+                  </Link>{" "}
+                  de la página de inicio.
+                </>
+              ) : (
+                f.a
+              ),
+          }))}
         />
         <div style={{ marginTop: "40px", textAlign: "center" }}>
           <Button variant="primary" size="lg" href={ROUTES.turnos}>

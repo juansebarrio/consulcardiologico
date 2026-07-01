@@ -22,6 +22,12 @@ export const WHATSAPP_E164 = "5492914161833";
 export const PHONE_DISPLAY = "0291 416-1833";
 
 /**
+ * Teléfono para links `tel:` en formato E.164 CON "+", SIN el "9" de WhatsApp:
+ * al discar una llamada de voz el "9" no va (solo aplica a mensajería móvil).
+ */
+export const PHONE_TEL = "+542914161833";
+
+/**
  * Agente de voz de ElevenLabs — opción «Hablar» del asistente.
  * El agentId es PÚBLICO (viaja al navegador y figura en la URL de «talk-to»),
  * por eso puede vivir acá. Override opcional con NEXT_PUBLIC_ELEVENLABS_AGENT_ID.
@@ -101,6 +107,28 @@ export function siteUrl(): string {
 export function whatsappLink(text?: string): string {
   const base = `https://wa.me/${WHATSAPP_E164}`;
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+/**
+ * Metadata completa por página. Next NO hace merge profundo de `openGraph`:
+ * si una página define solo una parte, pierde el resto del layout — este
+ * helper siempre arma el objeto completo (url/siteName/locale/type incluidos)
+ * para que los previews de WhatsApp muestren la página real y no el home.
+ */
+export function pageMeta({ title, description, path }: { title: string; description: string; path: string }) {
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title,
+      description,
+      url: path,
+      siteName: SITE.name,
+      locale: SITE.locale,
+      type: "website" as const,
+    },
+  };
 }
 
 export type Doctor = {

@@ -1,10 +1,25 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 
 import { Badge, Button, Callout, Card } from "@/components/ui";
 import { Asistente } from "@/components/site/Asistente";
 import { CompromisoIcon } from "@/components/site/CompromisoIcon";
 import { HeroVideo } from "@/components/site/HeroVideo";
-import { COMPROMISOS, DOCTORS, HERO_POSTER, HERO_VIDEO, ROUTES } from "@/lib/site";
+import { COMPROMISOS, DOCTORS, HERO_POSTER, HERO_VIDEO, ROUTES, SITE } from "@/lib/site";
+
+export const metadata: Metadata = {
+  description: SITE.description,
+  alternates: { canonical: "/" },
+  // El título hereda el default del layout; el OG del home lleva el tagline.
+  openGraph: {
+    title: `${SITE.name} — ${SITE.tagline}`,
+    description: SITE.description,
+    url: "/",
+    siteName: SITE.name,
+    locale: SITE.locale,
+    type: "website",
+  },
+};
 
 export default function HomePage() {
   return (
@@ -41,7 +56,7 @@ export default function HomePage() {
           <p style={{ fontSize: "clamp(17px, 2.4vw, 20px)", lineHeight: 1.6, color: "var(--text-muted)", maxWidth: "52ch", marginTop: "28px" }}>
             Dos cardiólogos en el centro de Bahía Blanca. Atendemos sin apuro, pedimos solo lo necesario y te seguimos de cabecera a largo plazo.
           </p>
-          <div style={{ display: "flex", gap: "14px", marginTop: "40px", flexWrap: "wrap" }}>
+          <div className="hero-ctas" style={{ display: "flex", gap: "14px", marginTop: "40px", flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" href={ROUTES.turnos}>
               Pedir turno por WhatsApp
             </Button>
@@ -49,6 +64,22 @@ export default function HomePage() {
               Cómo trabajamos
             </Button>
           </div>
+          {/* Señal de confianza: la afiliación institucional, visible de entrada. */}
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "12.5px",
+              fontWeight: 600,
+              letterSpacing: ".08em",
+              textTransform: "uppercase",
+              color: "var(--text-muted)",
+              marginTop: "28px",
+              lineHeight: 1.8,
+            }}
+          >
+            Hospital Penna — Jefe del Servicio de Cardiología <span style={{ color: "var(--accent)" }}>·</span> Jefa de
+            Sala de Unidad Coronaria
+          </p>
         </div>
       </section>
 
@@ -60,7 +91,7 @@ export default function HomePage() {
           </div>
           <div className="hairline-grid">
             {COMPROMISOS.map((t, i) => (
-              <div key={t} style={{ background: "var(--paper)", padding: "40px 38px", display: "flex", gap: "20px", alignItems: "flex-start" }}>
+              <div key={t} style={{ background: "var(--paper)", padding: "clamp(24px, 5vw, 40px) clamp(20px, 5vw, 38px)", display: "flex", gap: "20px", alignItems: "flex-start" }}>
                 <span style={{ color: "var(--accent)", display: "inline-flex", flexShrink: 0, marginTop: "2px" }}>
                   <CompromisoIcon index={i} size={30} />
                 </span>
@@ -72,9 +103,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ASISTENTE VIRTUAL (chat con IA) */}
-      <Asistente />
 
       {/* CARDIÓLOGOS */}
       <section className="container" style={{ padding: "clamp(56px, 9vw, 88px) clamp(20px, 5vw, 48px)" }}>
@@ -99,7 +127,7 @@ export default function HomePage() {
               <div style={{ padding: "28px 30px 32px" }}>
                 <h3 style={{ fontSize: "26px" }}>{d.name}</h3>
                 <div style={{ marginTop: "10px" }}>
-                  <Badge variant="soft">{d.dias}</Badge>
+                  <Badge variant="soft">Atiende · {d.dias}</Badge>
                 </div>
                 <p style={{ fontSize: "15px", lineHeight: 1.7, color: "var(--text-muted)", marginTop: "16px" }}>{d.bioShort}</p>
               </div>
@@ -112,6 +140,9 @@ export default function HomePage() {
           </Callout>
         </div>
       </section>
+
+      {/* ASISTENTE VIRTUAL (chat con IA) — después de conocer a los médicos */}
+      <Asistente />
 
       {/* PILARES BAND */}
       <section style={{ background: "var(--surface-ink)", color: "var(--text-on-ink)" }}>

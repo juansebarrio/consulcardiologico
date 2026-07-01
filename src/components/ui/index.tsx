@@ -431,6 +431,8 @@ interface TextFieldProps {
   required?: boolean;
   full?: boolean;
   iconLeft?: ReactNode;
+  autoComplete?: string;
+  inputMode?: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search";
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -446,6 +448,8 @@ export function TextField({
   required = false,
   full = true,
   iconLeft = null,
+  autoComplete,
+  inputMode,
   onChange,
 }: TextFieldProps) {
   const [focus, setFocus] = useState(false);
@@ -488,10 +492,13 @@ export function TextField({
           placeholder={placeholder}
           disabled={disabled}
           required={required}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
           onChange={onChange}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
-          style={{ flex: 1, border: "none", outline: "none", background: "transparent", font: "inherit", fontSize: "15px", color: "var(--text-strong)" }}
+          // 16px mínimo: por debajo, iOS Safari fuerza zoom al enfocar.
+          style={{ flex: 1, border: "none", outline: "none", background: "transparent", font: "inherit", fontSize: "16px", color: "var(--text-strong)" }}
         />
       </span>
       {error ? (
@@ -566,7 +573,7 @@ export function Textarea({
           borderRadius: "var(--radius-md)",
           padding: "10px 12px",
           font: "inherit",
-          fontSize: "15px",
+          fontSize: "16px",
           lineHeight: 1.5,
           color: "var(--text-strong)",
           outline: "none",
@@ -664,7 +671,7 @@ export function Select({
             outline: "none",
             background: "transparent",
             font: "inherit",
-            fontSize: "15px",
+            fontSize: "16px",
             color: "var(--text-strong)",
             padding: "10px 36px 10px 12px",
             cursor: disabled ? "not-allowed" : "pointer",

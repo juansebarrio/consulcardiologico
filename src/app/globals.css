@@ -334,6 +334,18 @@ img {
   }
 }
 
+/* CTAs del hero a ancho completo en pantallas chicas (tap targets generosos). */
+@media (max-width: 600px) {
+  .hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-ctas > * {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* Latido suave en la palabra «corazón» del hero — guiño cardiológico, sin apuro.
    Doble pulso (lub-dub) y pausa. Se detiene con prefers-reduced-motion (la regla
    global de arriba neutraliza animation-duration). */
@@ -439,6 +451,8 @@ img {
 /* ============================================================================
    Pop-up de «Pedir turno» (components/site/TurnoModal.tsx)
    Entrada suave; prefers-reduced-motion (regla global de arriba) la neutraliza.
+   En pantallas chicas se vuelve bottom sheet (pegado abajo, esquinas superiores
+   redondeadas) para que el pulgar llegue a todo.
    ========================================================================== */
 @keyframes turno-overlay-in {
   from {
@@ -463,6 +477,60 @@ img {
 }
 .turno-dialog {
   animation: turno-dialog-in var(--dur-slow) var(--ease-out) both;
+}
+
+@keyframes turno-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 600px) {
+  .turno-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  .turno-dialog {
+    max-width: 100% !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+    border-bottom: none !important;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+    max-height: 88dvh;
+    overflow-y: auto;
+    animation-name: turno-sheet-in;
+  }
+}
+
+/* ============================================================================
+   FAB de WhatsApp (components/site/WhatsAppFab.tsx) — CTA persistente.
+   ========================================================================== */
+@keyframes wa-fab-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.wa-fab {
+  animation: wa-fab-in var(--dur-slow) var(--ease-out) both;
+  animation-delay: 400ms;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.wa-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.wa-fab:focus-visible {
+  outline: none;
+  box-shadow: var(--ring), var(--shadow-md);
 }
 
 /* Grilla simétrica de 2 columnas → 1 en mobile. */
@@ -560,12 +628,27 @@ img {
   background: transparent;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
-  width: 40px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   align-items: center;
   justify-content: center;
   color: var(--text-strong);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Entrada animada del menú desplegable (mobile). La regla global de
+   prefers-reduced-motion la neutraliza. */
+@keyframes site-nav-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 720px) {
@@ -585,7 +668,26 @@ img {
   .site-nav[data-open="false"] {
     display: none;
   }
+  .site-nav[data-open="true"] {
+    animation: site-nav-in var(--dur) var(--ease) both;
+  }
+  /* Filas del menú a tamaño tapeable. */
+  .site-nav a {
+    padding: 12px 2px !important;
+    font-size: 16px !important;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
   .site-burger {
     display: inline-flex;
+  }
+}
+
+/* En pantallas muy chicas el CTA del header se compacta para convivir con el
+   logo y el burger. */
+@media (max-width: 400px) {
+  .header-cta a {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
   }
 }

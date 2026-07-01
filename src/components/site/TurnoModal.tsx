@@ -7,94 +7,27 @@
  * cualquier botón/enlace «Pedir turno» (los que apuntan a `/turnos`) abre este
  * modal con tres preguntas rápidas —nombre, preferencia de horario y obra social
  * o particular— y deja el mensaje pre-escrito listo para enviar por WhatsApp.
+ * Los campos viven en TurnoFields (compartidos con el formulario de /turnos).
  *
  * Cómo se dispara: se monta UNA vez en el layout y escucha los clics a enlaces
  * internos hacia `/turnos` en fase de captura. Llama solo `preventDefault()`, así
  * el `<Link>` de Next ve `defaultPrevented` y NO navega (ver link.js), pero los
  * demás handlers del click —p. ej. cerrar el menú mobile del header— sí corren.
  * Si no hay JS, el enlace cae a la página `/turnos` de siempre (fallback).
+ *
+ * En mobile se presenta como bottom sheet (ver .turno-dialog en globals.css).
+ * Cerrarlo NO borra lo escrito: solo se resetea tras enviar.
  */
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { CSSProperties, FormEvent, ReactNode } from "react";
+import type { FormEvent } from "react";
 
-import { Button, TextField } from "@/components/ui";
+import { Button } from "@/components/ui";
+import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
+import { TurnoFields, turnoListo, type Cobertura, type Preferencia } from "@/components/site/TurnoFields";
 import { buildTurnoWhatsApp, type TurnoInput } from "@/lib/asistente";
 import { ROUTES, whatsappLink } from "@/lib/site";
-
-function WhatsAppIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.207zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-    </svg>
-  );
-}
-
-/* Etiqueta + control, al mismo registro que los campos del kit (ui/index.tsx). */
-function Field({ label, required, children }: { label: string; required?: boolean; children: ReactNode }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontFamily: "var(--font-body)" }}>
-      <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-strong)" }}>
-        {label}
-        {required ? (
-          <>
-            <span aria-hidden="true" style={{ color: "var(--accent)" }}> *</span>
-            <span className="sr-only"> (obligatorio)</span>
-          </>
-        ) : null}
-      </span>
-      {children}
-    </div>
-  );
-}
-
-/* Control segmentado (2–3 opciones) accesible como grupo de radios. */
-function Segmented({
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  options: { value: string; label: string }[];
-}) {
-  return (
-    <div
-      role="radiogroup"
-      aria-label={label}
-      style={{ display: "grid", gridTemplateColumns: `repeat(${options.length}, 1fr)`, gap: "8px" }}
-    >
-      {options.map((o) => {
-        const active = value === o.value;
-        const st: CSSProperties = {
-          appearance: "none",
-          cursor: "pointer",
-          fontFamily: "var(--font-body)",
-          fontSize: "15px",
-          fontWeight: 600,
-          padding: "11px 12px",
-          borderRadius: "var(--radius-md)",
-          border: "1px solid " + (active ? "var(--accent)" : "var(--border)"),
-          background: active ? "var(--accent)" : "var(--paper)",
-          color: active ? "var(--accent-contrast)" : "var(--text-strong)",
-          transition:
-            "background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease)",
-        };
-        return (
-          <button key={o.value} type="button" role="radio" aria-checked={active} onClick={() => onChange(o.value)} style={st}>
-            {o.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-type Preferencia = "" | "manana" | "tarde";
-type Cobertura = "" | "os" | "particular";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -114,8 +47,13 @@ export function TurnoModal() {
     setOpen(true);
   }
 
+  // Cerrar NO borra lo escrito: un tap accidental fuera del diálogo no debe
+  // costarle el pedido a medias. Solo se limpia tras enviar (reset).
   function cerrar() {
     setOpen(false);
+  }
+
+  function reset() {
     setNombre("");
     setPreferencia("");
     setCobertura("");
@@ -155,7 +93,14 @@ export function TurnoModal() {
     document.body.style.overflow = "hidden";
 
     const focusTimer = window.setTimeout(() => {
-      dialogRef.current?.querySelector<HTMLElement>("input")?.focus();
+      // Autofocus del input solo con mouse: en touch el teclado taparía las
+      // preguntas. En touch enfocamos el diálogo (mantiene la trampa de foco).
+      const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      if (fine) {
+        dialogRef.current?.querySelector<HTMLElement>("input")?.focus();
+      } else {
+        dialogRef.current?.focus();
+      }
     }, 0);
 
     function onKeyDown(e: KeyboardEvent) {
@@ -192,9 +137,7 @@ export function TurnoModal() {
     };
   }, [open]);
 
-  const obraValor = cobertura === "particular" ? "Particular" : obra.trim();
-  const puedeEnviar =
-    nombre.trim() !== "" && preferencia !== "" && (cobertura === "particular" || (cobertura === "os" && obra.trim() !== ""));
+  const { valido: puedeEnviar, obraValor } = turnoListo(nombre, preferencia, cobertura, obra);
 
   function enviar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -204,7 +147,15 @@ export function TurnoModal() {
       obraSocial: obraValor,
       preferencia: preferencia === "manana" ? "Por la mañana" : "Por la tarde",
     };
-    window.open(whatsappLink(buildTurnoWhatsApp(data)), "_blank", "noopener,noreferrer");
+    const url = whatsappLink(buildTurnoWhatsApp(data));
+    // In-app browsers (Instagram/Facebook) suelen bloquear window.open:
+    // si lo tragan, navegamos directo para no perder el handoff.
+    const w = window.open(url, "_blank", "noopener,noreferrer");
+    if (!w) {
+      window.location.href = url;
+      return;
+    }
+    reset();
     cerrar();
   }
 
@@ -234,6 +185,7 @@ export function TurnoModal() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="turno-modal-title"
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         style={{
           position: "relative",
@@ -244,6 +196,7 @@ export function TurnoModal() {
           borderRadius: "var(--radius-lg)",
           boxShadow: "var(--shadow-lg)",
           padding: "clamp(24px, 5vw, 34px)",
+          outline: "none",
         }}
       >
         <button
@@ -252,8 +205,8 @@ export function TurnoModal() {
           aria-label="Cerrar"
           style={{
             position: "absolute",
-            top: "14px",
-            right: "14px",
+            top: "6px",
+            right: "6px",
             appearance: "none",
             background: "transparent",
             border: "none",
@@ -261,7 +214,11 @@ export function TurnoModal() {
             fontSize: "20px",
             lineHeight: 1,
             color: "var(--text-muted)",
-            padding: "4px",
+            width: "44px",
+            height: "44px",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           ✕
@@ -278,48 +235,16 @@ export function TurnoModal() {
         </p>
 
         <form onSubmit={enviar} style={{ display: "flex", flexDirection: "column", gap: "18px", marginTop: "22px" }}>
-          <TextField
-            label="Tu nombre"
-            placeholder="Cómo te llamás"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            required
+          <TurnoFields
+            nombre={nombre}
+            onNombre={setNombre}
+            preferencia={preferencia}
+            onPreferencia={setPreferencia}
+            cobertura={cobertura}
+            onCobertura={setCobertura}
+            obra={obra}
+            onObra={setObra}
           />
-
-          <Field label="¿Qué preferís?" required>
-            <Segmented
-              label="¿Qué preferís?"
-              value={preferencia}
-              onChange={(v) => setPreferencia(v as Preferencia)}
-              options={[
-                { value: "manana", label: "Mañana" },
-                { value: "tarde", label: "Tarde" },
-              ]}
-            />
-          </Field>
-
-          <Field label="¿Obra social o particular?" required>
-            <Segmented
-              label="¿Obra social o particular?"
-              value={cobertura}
-              onChange={(v) => setCobertura(v as Cobertura)}
-              options={[
-                { value: "os", label: "Obra social" },
-                { value: "particular", label: "Particular" },
-              ]}
-            />
-            {cobertura === "os" ? (
-              <div style={{ marginTop: "10px" }}>
-                <TextField
-                  label=""
-                  placeholder="¿Cuál? Ej.: OSDE, IOMA, Swiss Medical…"
-                  value={obra}
-                  onChange={(e) => setObra(e.target.value)}
-                  required
-                />
-              </div>
-            ) : null}
-          </Field>
 
           <div style={{ marginTop: "4px" }}>
             <Button type="submit" variant="primary" size="lg" full disabled={!puedeEnviar} iconLeft={<WhatsAppIcon />}>
